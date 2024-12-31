@@ -21,13 +21,13 @@ sudo apt install nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
 
 ## Building the Program
 
-To Assemble:
-nasm -f elf32 -o Lab0xFF-Assemblipede.o Lab0xFF-Assemblipede.asm
-To Link:
-ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o Lab0xFF-Assemblipede Lab0xFF-Assemblipede.o -lncurses -lc
+To Assemble:  
+nasm -f elf32 -o SnakeByte.o SnakeByte.asm
+To Link:  
+ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc
 
 Run the Program with:
-./Lab0xFF-Assemblipede
+./SnakeByte [level].txt
 
 Troubleshooting "cannot execute: required file not found":
 Ensure the interpreter is set correctly:
