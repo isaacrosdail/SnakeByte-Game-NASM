@@ -1,6 +1,9 @@
-## Lab0xFF Assemblipede
+## SnakeByte
 
-Lab0xFF Assemblipede is a 32-bit NASM assembly project designed to run in a Linux environment (e.g., WSL).
+![Screenshot 1](https://github.com/Isaac-rosdail/SnakeByte-Game-NASM/blob/main/images/screenshot1.png?raw=true)
+![Screenshot 2 Paused](https://github.com/Isaac-rosdail/SnakeByte-Game-NASM/blob/main/images/screenshot2.png?raw=true)
+
+SnakeByte is a 32-bit NASM assembly project designed to run in a Linux environment (e.g., WSL).
 
 ## Prerequisites
 
@@ -22,14 +25,22 @@ sudo apt install nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
 ## Building the Program
 
 To Assemble:  
-nasm -f elf32 -o SnakeByte.o SnakeByte.asm
+nasm -f elf32 -o SnakeByte.o SnakeByte.asm  
 To Link:  
-ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc
-
-Run the Program with:
-./SnakeByte [level].txt
+ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc  
 
 Troubleshooting "cannot execute: required file not found":
 Ensure the interpreter is set correctly:
-patchelf --set-interpreter /lib/ld-linux.so.2 Lab0xFF-Assemblipede
+patchelf --set-interpreter /lib/ld-linux.so.2 SnakeByte
 
+## Level Selection
+
+Run the Program with:
+./SnakeByte levels/[levelname].txt
+* Replace [levelname].txt with the desired level file, such as lvl_001.txt
+
+## Instructions
+
+Controls:
+- Move with WASD
+- Pause with spacebar
