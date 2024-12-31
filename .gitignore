@@ -1,2 +1,4 @@
 
+# Ignore .o and files w/o extensions (i.e., assembled program executable)
 *.o
+*[!.]*
