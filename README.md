@@ -19,21 +19,25 @@ To run this program, you'll need the following:
 ## Install Required Dependencies
 
 Run these commands in your Linux terminal to install all the required tools and libraries:
-sudo apt update
-sudo dpkg --add-architecture i386
-sudo apt update
-sudo apt install nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
+```bash
+# Add i386 architecture support
+sudo apt update && sudo dpkg --add-architecture i386
+# Install necessary components to assemble/link (nasm, ncurses, stuff for C)
+sudo apt update && sudo apt install nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
+```
 
 ## Building the Program
 
-To Assemble:  
+```
+# To Assemble:  
 nasm -f elf32 -o SnakeByte.o SnakeByte.asm  
-To Link:  
+# To Link:  
 ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc  
 
-Troubleshooting "cannot execute: required file not found":
-Ensure the interpreter is set correctly:
+# Troubleshooting "cannot execute: required file not found":
+# Ensure the interpreter is set correctly:
 patchelf --set-interpreter /lib/ld-linux.so.2 SnakeByte
+```
 
 ## Level Selection
 
