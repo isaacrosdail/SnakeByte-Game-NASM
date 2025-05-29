@@ -7,7 +7,10 @@ WORKDIR /app
 RUN dpkg --add-architecture i386
 
 # Install nasm, 32-bit ncurses library for terminal drawing, multilib so gcc can compile/link for multiple architectures (32-bit & 64-bit, let's us do -m elf_i386), 32-bit standard C library (libc6:i386, used for syscalls & for ncurses' C lib calls internally), and patchelf (dynamic linker path? study this)
-RUN apt update && apt install -y nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf ttyd
+RUN apt update && apt install -y nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
+
+# Install snap to install ttyd
+RUN apt install -y snapd && snap install ttyd
 
 # Copy files into workdir
 COPY . .
