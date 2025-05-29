@@ -10,7 +10,7 @@ RUN dpkg --add-architecture i386
 RUN apt update && apt install -y nasm gcc-multilib libncurses5-dev:i386 libc6:i386 patchelf
 
 # Install snap to install ttyd
-RUN apt install -y snapd && snap install ttyd
+RUN apt install -y snapd && snap install ttyd --classic
 
 # Copy files into workdir
 COPY . .
