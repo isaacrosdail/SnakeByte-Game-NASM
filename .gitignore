@@ -1,5 +1,23 @@
 
-# Ignore .o and files w/o extensions (i.e., assembled program executable)
+# Compiled object files
 *.o
-*[!.]*
+
+# Assembled executables (no extension)
+SnakeByte
+
+# Build artifacts (Study later)
+*.lst
+*.map
+
+# IDE/Editor files
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+
+# Don't ignore important files
 !Dockerfile
+!*.asm
