@@ -1,0 +1,33 @@
+name: SnakeByte CI/CD
+
+on:
+    push:
+        branches: [ main ]
+        paths-ignore:
+            - 'PROJECT_LOG.md'
+            - 'README.md'
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        
+        steps:
+        - name: Deploy to Linode
+          uses: appleboy/ssh-action@master
+          with:
+            host: ${{ secrets.LINODE_HOST }}
+            username: ${{ secrets.LINODE_USERNAME }}
+            key: ${{ secrets.LINODE_SSH_KEY }}
+            script: |
+                cd ${{ secrets.PROJECT_PATH_SNAKEBYTE }}
+                git pull origin main
+                
+                # Build new container
+                docker build -t snakebyte .
+                # Take down old container & remove
+                docker stop snakebyte-container || true
+                docker rm snakebyte-container || true
+                # Start new container with same name
+                docker run -d --name snakebyte-container -p 7681:7681 snakebyte
+                
+                echo "Deployment completed at $(date)"
