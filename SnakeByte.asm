@@ -116,18 +116,19 @@ section .text
 _start:
     
    ;follow cdecl -- we will be using command line arguments
-   push EBP
-   mov  EBP, ESP
-
-   ; [EBP+4] is the arg count
-   ; [EBP+8,12,16,...] are pointers to strings
-   ; [EBP+8] is the command itself (usually the program name)
-   ; [EBP+12] is first argument...  
+   push EBP             ; this saves the old base pointer (pushes to stack for later)
+   mov  EBP, ESP        ; set up new stack frame (study later)
+                                                                Stack layout now:
+   ; [EBP+4] is the arg count                                   (argc)
+   ; [EBP+8,12,16,...] are pointers to strings                  
+   ; [EBP+8] is the command itself (usually the program name)   (argv[0])
+   ; [EBP+12] is first argument...                              (argv[1]) <- our level filename (eg, lvl_001.txt)
    
    ; verify the first argument
-   push dword [EBP+12]
-   call printf
-   add esp,4
+   push dword [EBP+12]  ; Push the level filename onto stack
+   call printf          ; printf looks at [ESP + 4] and finds your filename
+   add esp,4            ; Restore ESP to pre-push position (cdecl caller cleanup)
+                        ; This backs up the stack pointer - like moving cursor back to overwrite old text
    
    ; the args will be used by _LoadLevel -- getting the filename of the level data to load
    ; loadlevel is purely internal to this program and does not need cdecl
