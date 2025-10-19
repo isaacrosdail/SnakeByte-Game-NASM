@@ -1,0 +1,22 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build SnakeByte",
+            "type": "shell",
+            "command": "nasm -f elf32 -o SnakeByte.o SnakeByte.asm && ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc && patchelf --set-interpreter /lib/ld-linux.so.2 SnakeByte",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Build SnakeByte (Debug)",
+            "type": "shell",
+            "command": "nasm -f elf32 -g -F dwarf -o SnakeByte.o SnakeByte.asm && ld -m elf_i386 --dynamic-linker /lib/ld-linux.so.2 -o SnakeByte SnakeByte.o -lncurses -lc && patchelf --set-interpreter /lib/ld-linux.so.2 SnakeByte",
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
+}
