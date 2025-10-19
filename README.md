@@ -1,11 +1,14 @@
 ## SnakeByte
 
-<div style="display: flex; align-items: flex-start; gap: 10px;">
-  <img src="https://github.com/Isaac-rosdail/SnakeByte-Game-NASM/blob/main/images/screenshot1.png?raw=true" alt="Screenshot 1" width="200"/>
-  <img src="https://github.com/Isaac-rosdail/SnakeByte-Game-NASM/blob/main/images/screenshot2.png?raw=true" alt="Screenshot 2 Paused" width="200"/>
-</div>
-
 SnakeByte is a 32-bit NASM assembly project designed to run in a Linux environment (e.g., WSL).
+
+<p align="center">
+  <img src="./assets/gameplay_1.gif" width="500" alt="SnakeByte gameplay demo 1">
+</p>
+<p align="center">
+  <img src="./assets/gameplay_2.gif" width="500" alt="SnakeByte gameplay demo 2">
+</p>
+
 
 ## Prerequisites
 
