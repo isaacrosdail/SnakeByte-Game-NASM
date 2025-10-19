@@ -108,6 +108,15 @@ extern noecho
 extern timeout
 extern notimeout
 extern refresh
+; OTHERS ADDED NEW for colors
+extern start_color
+extern init_pair
+extern COLOR_PAIR
+extern attron
+extern attroff
+extern addch
+extern move
+
 
 global _start
 
@@ -118,7 +127,7 @@ _start:
    ;follow cdecl -- we will be using command line arguments
    push EBP             ; this saves the old base pointer (pushes to stack for later)
    mov  EBP, ESP        ; set up new stack frame (study later)
-                                                                Stack layout now:
+   ; Stack layout now:
    ; [EBP+4] is the arg count                                   (argc)
    ; [EBP+8,12,16,...] are pointers to strings                  
    ; [EBP+8] is the command itself (usually the program name)   (argv[0])
@@ -138,6 +147,41 @@ _start:
 ;; Initialize ncurses stuff...
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     call initscr  ; ncurses: initscr -- initialize the screen, ready for ncurses stuff...
+
+    ; ---------------
+    call start_color ; Added new -> for coloring various chars
+    
+    ; DEFINE COLOR PAIRS FOR addch
+    
+    ; Pair 1: Snake (green)
+    push 0 ; background (COLOR_BLACK)
+    push 2 ; foreground (COLOR_GREEN)
+    push 1 ; pair ID 1
+    call init_pair
+    add esp, 12
+    
+    ; Pair 2: Portals (magenta)
+    push 0 ; background (COLOR_BLACK)
+    push 5 ; foreground (COLOR_MAGENTA)
+    push 2 ; pair ID 2
+    call init_pair
+    add esp, 12
+
+    ; Pair 3: Food (yellow)
+    push 0 ; background (COLOR_BLACK)
+    push 3 ; foreground (COLOR_YELLOW)
+    push 3 ; pair ID 3
+    call init_pair
+    add esp, 12
+    
+    ; Pair 4: Walls (cyan)
+    push 0 ; background (COLOR_BLACK)
+    push 6 ; foreground (COLOR_CYAN)
+    push 4 ; pair ID 4
+    call init_pair
+    add esp, 12
+    
+    ; ---------------
     call cbreak   ; ncurses: cbreak -- disables line buffering so we can get immediate key input
     call clear    ; ncurses: clear -- clear the screen
     push 0
@@ -167,10 +211,88 @@ _GameLoop:
     add esp, 24
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    push dword lvlBuffer  ; lvlBuffer should just contain one large multiline string...
-    call printw           ; ncurses: printw -- works just like printf, except printing starts from current print position on the ncurses screen
-                          ;                    here we are just using it to print entire lvlBuffer
-    add esp,4
+    
+    ; addch doesn't automatically handle cursor positioning the same way printw does for multi-line strings.
+    ; We need to explicitly move the cursor to (0, 0) before starting to print
+    ;push 0               ; x
+    ;push 0               ; y
+    ;call move            ; ie, move(0, 0)
+    ;add esp, 8
+
+
+    ; NEW: Print lvlBuffer char-by-char with colors
+    mov esi, lvlBuffer   ; pointer to current char
+
+_PrintLoop:
+    movzx eax, byte [esi] ; load curr char (zero-extend to 32bit: moves a byte into 32-bit register and fills upper bits with zeros
+
+    ; Check if we're at end (null terminator)
+    test al, al           ; Bitwise AND - test al,al performs 'al AND al' and sets CPU flags based on the result, but doesn't store the result
+    jz _PrintDone
+    
+    ; Determine which color pair to use based on character
+    mov ebx, 0            ; default: no color pair
+    
+    ; Debug: Bypass color logic for now to ensure loop generally works
+    ; jmp _NoColor
+
+    cmp al, '@'
+    je _SetSnakeColor
+    cmp al, 'o'
+    je _SetSnakeColor
+    cmp al, '0'
+    je _SetPortalColor
+    cmp al, '*'
+    je _SetFoodColor
+    cmp al, '-'
+    je _SetWallColor
+    cmp al, '|'
+    je _SetWallColor
+    cmp al, '+'
+    je _SetWallColor
+    jmp _PrintChar        ; no special color
+    
+_SetSnakeColor:
+    mov ebx, 1            ; pair 1 (green)
+    jmp _PrintChar
+_SetPortalColor:
+    mov ebx, 2            ; pair 2 (magenta)
+    jmp _PrintChar
+_SetFoodColor:
+    mov ebx, 3            ; pair 3 (yellow)
+    jmp _PrintChar
+_SetWallColor:
+    mov ebx, 4            ; pair 4 (cyan)
+    jmp _PrintChar
+
+_PrintChar:
+    ; Store original char
+    movzx ecx, byte [esi]     ; ecx = actual char
+
+    cmp ebx, 0
+    je _NoColor
+
+    ; Compute COLOR_PAIR(ebx) and OR it into char
+    mov eax, ebx
+    shl eax, 8                ; eax = COLOR_PAIR(ebx)
+    or eax, ecx               ; merge char into low bits of color
+    jmp _DoPrint
+
+_NoColor:
+    mov eax, ecx              ; no color, just char
+
+_DoPrint:
+    push eax
+    call addch
+    add esp, 4
+    
+    inc esi
+    jmp _PrintLoop
+
+    
+_PrintDone:
+    ; continue with refresh
+
     call refresh          ;; added for debugging
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;; _Update lvlBuffer based on player movement & game "AI"
