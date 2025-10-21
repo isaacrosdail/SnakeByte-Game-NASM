@@ -18,16 +18,9 @@ jobs:
             host: ${{ secrets.LINODE_HOST }}
             username: ${{ secrets.LINODE_USERNAME }}
             key: ${{ secrets.LINODE_SSH_KEY }}
+            port: ${{ secrets.LINODE_PORT }}
             script: |
                 cd ${{ secrets.PROJECT_PATH_SNAKEBYTE }}
-                git pull origin main
-                
-                # Build new container
-                docker build -t snakebyte .
-                # Take down old container & remove
-                docker stop snakebyte-container || true
-                docker rm snakebyte-container || true
-                # Start new container with same name
-                docker run -d --name snakebyte-container -p 7681:7681 snakebyte
-                
-                echo "Deployment completed at $(date)"
+                git fetch origin main && git reset --hard origin/main
+
+                docker compose -f docker-compose.prod.yml up -d --build

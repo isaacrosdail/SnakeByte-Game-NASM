@@ -1,0 +1,10 @@
+
+services:
+  snake:
+    container_name: snakebyte-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "7681:7681"

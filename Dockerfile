@@ -32,4 +32,4 @@ RUN patchelf --set-interpreter /lib/ld-linux.so.2 SnakeByte
 # Expose ttyd's default port & run via ttyd
 EXPOSE 7681
 #CMD ["ttyd", "-W", "bash"]
-CMD ["ttyd", "-W", "-t", "SnakeByte - Play Snake in Assembly!", "./SnakeByte", "levels/lvl_001.txt"]
+CMD ["ttyd", "-W", "./SnakeByte", "levels/lvl_001.txt"]
